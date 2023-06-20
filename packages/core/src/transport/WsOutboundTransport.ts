@@ -100,6 +100,12 @@ export class WsOutboundTransport implements OutboundTransport {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleMessageEvent = (event: any) => {
     this.logger.trace('WebSocket message event received.', { url: event.target.url })
+    this.logger.trace(JSON.stringify(event))
+    if (event.data == "") {
+      this.logger.debug('Data received from mediator is blank! Ignoring...')
+
+      return
+    }
     const payload = JsonEncoder.fromBuffer(event.data)
     if (!isValidJweStructure(payload)) {
       throw new Error(
